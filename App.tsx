@@ -8,6 +8,7 @@ import Welcome from './src/components/Welcome';
 import TinhToan from './src/pages/TinhToan';
 import Flex from './src/pages/Flex';
 import Login from './src/pages/Login';
+import SignUp from './src/pages/SignUp';
 
 const App = () => {
 
@@ -19,7 +20,7 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.login}>
-      <Login />
+      <SignUp />
     </SafeAreaView>
   )
 };
