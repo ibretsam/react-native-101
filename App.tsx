@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import {
   Button,
-  SafeAreaView, StyleSheet, TextInput
+  SafeAreaView, StyleSheet, TextInput, View
 } from 'react-native';
 import Hello from './src/components/Hello';
 import Welcome from './src/components/Welcome';
+import TinhToan from './src/pages/TinhToan';
+import Flex from './src/pages/Flex';
+import Login from './src/pages/Login';
 
 const App = () => {
 
@@ -15,11 +18,8 @@ const App = () => {
   }
 
   return (
-    <SafeAreaView>
-      <Hello/>
-      <TextInput onChangeText={setName} value={name} style={styles.input} placeholder="Enter your name"/>
-      <Button title='Clear name' onPress={clearName}/>
-      <Welcome name={name}/>
+    <SafeAreaView style={styles.login}>
+      <Login />
     </SafeAreaView>
   )
 };
@@ -31,6 +31,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
   },
+  login: {
+    flex: 1,
+  }
 });
 
 export default App;
