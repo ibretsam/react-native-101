@@ -61,7 +61,7 @@ const Login = () => {
       <Text style={styles.continueText}>or continue with</Text>
 
       <View style={styles.socialBtns}>
-        <Pressable style={[styles.socialBtn, {marginRight: 16}]}>
+        <Pressable style={[styles.socialBtn]}>
           <Image source={fbLogo} style={{marginRight: 10}} />
           <Text>Facebook</Text>
         </Pressable>
@@ -98,14 +98,12 @@ const styles = StyleSheet.create({
     marginBottom: 50,
   },
   heroTitle: {
-    fontFamily: 'Poppins',
     fontStyle: 'normal',
     fontWeight: '700',
     fontSize: 48,
     lineHeight: 72,
   },
   heroDescription: {
-    fontFamily: 'Poppins',
     fontStyle: 'normal',
     fontWeight: '400',
     fontSize: 20,
@@ -113,7 +111,6 @@ const styles = StyleSheet.create({
     color: '#4E4B66',
   },
   inputLabel: {
-    fontFamily: 'Poppins',
     fontWeight: '400',
     fontSize: 14,
     lineHeight: 21,
@@ -145,7 +142,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   rememberMeText: {
-    fontFamily: 'Poppins',
     fontStyle: 'normal',
     fontWeight: '400',
     fontSize: 14,
@@ -153,7 +149,6 @@ const styles = StyleSheet.create({
     color: '#4E4B66',
   },
   forgotPasswordText: {
-    fontFamily: 'Poppins',
     fontStyle: 'normal',
     fontWeight: '400',
     fontSize: 14,
@@ -171,7 +166,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   heroBtnText: {
-    fontFamily: 'Poppins',
     fontStyle: 'normal',
     fontWeight: '600',
     fontSize: 16,
@@ -179,7 +173,6 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   continueText: {
-    fontFamily: 'Poppins',
     fontStyle: 'normal',
     fontWeight: '400',
     fontSize: 14,
@@ -205,14 +198,14 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     backgroundColor: '#EEF1F4',
     borderRadius: 6,
-    width: 174,
+    width: 166,
     height: 48,
   },
 
   signUp: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
   blackText: {
