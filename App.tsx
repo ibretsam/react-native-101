@@ -10,6 +10,10 @@ import Flex from './src/pages/Flex';
 import Login from './src/pages/Login';
 import SignUp from './src/pages/SignUp';
 import Profile from './src/pages/Profile';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
 
 const App = () => {
 
@@ -20,9 +24,12 @@ const App = () => {
   }
 
   return (
-    <SafeAreaView style={styles.login}>
-      <Login />
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName='SignUp'>
+        <Stack.Screen name="SignUp" component={SignUp} options={{headerShown: false}}/>
+        <Stack.Screen name="LogIn" component={Login} options={{headerShown: false}}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 };
 

@@ -1,4 +1,5 @@
-import React from 'react';
+import axios from 'axios';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -8,10 +9,33 @@ import {
   Image,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import {BASE_URL} from '../utils/Constants';
 
-const Login = () => {
+const Login = (props: any) => {
   const fbLogo = require('../../assets/fbIcon.png');
   const googleLogo = require('../../assets/googleIcon.png');
+
+  const {navigation} = props;
+
+  const toSignUp = () => {
+    navigation.navigate('SignUp');
+  };
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const login = async () => {
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/login`, {
+        email: email,
+        password: password,
+      });
+
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -28,7 +52,7 @@ const Login = () => {
         <Text style={styles.inputLabel}>
           Username<Text style={styles.redText}>*</Text>
         </Text>
-        <TextInput style={styles.input} />
+        <TextInput style={styles.input} onChangeText={setEmail} />
       </View>
 
       <View>
@@ -36,7 +60,11 @@ const Login = () => {
           <Text style={styles.inputLabel}>
             Password<Text style={styles.redText}>*</Text>
           </Text>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
         </View>
         <View style={styles.otherInput}>
           <View style={styles.rememberMe}>
@@ -54,7 +82,7 @@ const Login = () => {
         </View>
       </View>
 
-      <Pressable style={styles.heroBtn}>
+      <Pressable style={styles.heroBtn} onPress={login}>
         <Text style={styles.heroBtnText}>Login</Text>
       </Pressable>
 
@@ -73,7 +101,7 @@ const Login = () => {
 
       <View style={styles.signUp}>
         <Text>don’t have an account ? </Text>
-        <Pressable>
+        <Pressable onPress={toSignUp}>
           <Text style={styles.blueText}>Sign Up</Text>
         </Pressable>
       </View>

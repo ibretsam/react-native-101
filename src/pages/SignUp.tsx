@@ -1,4 +1,5 @@
-import React from 'react';
+import axios from 'axios';
+import React, {useState} from 'react';
 import {
   Text,
   View,
@@ -8,10 +9,44 @@ import {
   Image,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import AxiosIntance from '../utils/AxiosInstance';
+import {BASE_URL} from '../utils/Constants';
 
-const SignUp = () => {
+const SignUp = (props: any) => {
   const fbLogo = require('../../assets/fbIcon.png');
   const googleLogo = require('../../assets/googleIcon.png');
+
+  const {navigation} = props;
+
+  const toLoginScreen = () => {
+    navigation.navigate('LogIn');
+  };
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const register = async () => {
+    const response = await axios.post(`${BASE_URL}/users/register`, {
+      email: email,
+      password: password,
+    });
+
+    if (response.data.statusCode === 200) {
+      console.log('Register Success');
+      console.log(response.data.data);
+    } else if (response.data.statusCode === 500) {
+      console.log('Register Failed');
+      console.log(response.data.message);
+    } else {
+      try {
+        throw new Error(
+          `Request failed with status code ${response.data.statusCode}`,
+        );
+      } catch (error) {
+        console.log('Error: ' + error);
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -26,7 +61,7 @@ const SignUp = () => {
         <Text style={styles.inputLabel}>
           Username<Text style={styles.redText}>*</Text>
         </Text>
-        <TextInput style={styles.input} />
+        <TextInput style={styles.input} onChangeText={setEmail} />
       </View>
 
       <View>
@@ -34,7 +69,11 @@ const SignUp = () => {
           <Text style={styles.inputLabel}>
             Password<Text style={styles.redText}>*</Text>
           </Text>
-          <TextInput style={styles.input} />
+          <TextInput
+            style={styles.input}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+          />
         </View>
         <View style={styles.otherInput}>
           <View style={styles.rememberMe}>
@@ -49,7 +88,7 @@ const SignUp = () => {
         </View>
       </View>
 
-      <Pressable style={styles.heroBtn}>
+      <Pressable style={styles.heroBtn} onPress={register}>
         <Text style={styles.heroBtnText}>Sign Up</Text>
       </Pressable>
 
@@ -68,7 +107,7 @@ const SignUp = () => {
 
       <View style={styles.signUp}>
         <Text>Already have an account ? </Text>
-        <Pressable>
+        <Pressable onPress={toLoginScreen}>
           <Text style={styles.blueText}>Login</Text>
         </Pressable>
       </View>
@@ -200,7 +239,7 @@ const styles = StyleSheet.create({
   signUp: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 
   blackText: {
