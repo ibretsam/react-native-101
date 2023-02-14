@@ -9,6 +9,7 @@ import TinhToan from './src/pages/TinhToan';
 import Flex from './src/pages/Flex';
 import Login from './src/pages/Login';
 import SignUp from './src/pages/SignUp';
+import Profile from './src/pages/Profile';
 
 const App = () => {
 
@@ -20,7 +21,7 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.login}>
-      <SignUp />
+      <Login />
     </SafeAreaView>
   )
 };
