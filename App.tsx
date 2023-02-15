@@ -9,9 +9,10 @@ import SignUp from './src/pages/SignUp';
 import Profile from './src/pages/Profile';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import NewsList from './src/pages/NewsList';
-
-const Stack = createNativeStackNavigator();
+import {AppContextProvider} from './src/utils/AppContext';
+import AppNavigator from './src/utils/AppNavigator';
 
 const App = () => {
   const [name, setName] = useState('');
@@ -21,43 +22,15 @@ const App = () => {
   };
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="SignUp">
-        <Stack.Screen name="SignUp" options={{headerShown: false}}>
-          {props => (
-            <SafeAreaView style={styles.login}>
-              <SignUp navigation={props.navigation} />
-            </SafeAreaView>
-          )}
-        </Stack.Screen>
-
-        <Stack.Screen name="LogIn" options={{headerShown: false}}>
-          {props => (
-            <SafeAreaView style={styles.login}>
-              <Login navigation={props.navigation} />
-            </SafeAreaView>
-          )}
-        </Stack.Screen>
-
-        <Stack.Screen name="NewsList" options={{headerShown: false}}>
-          {props => (
-            <SafeAreaView style={styles.login}>
-              <NewsList navigation={props.navigation} />
-            </SafeAreaView>
-          )}
-        </Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AppContextProvider>
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </AppContextProvider>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
   login: {
     flex: 1,
   },

@@ -38,7 +38,7 @@ const Login = (props: any) => {
       console.log(response.data.data);
       setIsLoggedIn(true);
       await AsyncStorage.setItem('token', response.data.data.token);
-      navigation.navigate('NewsList');
+      // navigation.navigate('NewsList');
     } else if (response.data.statusCode === 500) {
       console.log('Login Failed');
       console.log(response.data.message);
