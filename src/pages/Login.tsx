@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, {useState} from 'react';
 import {
@@ -25,15 +26,27 @@ const Login = (props: any) => {
   const [password, setPassword] = useState('');
 
   const login = async () => {
-    try {
-      const response = await axios.post(`${BASE_URL}/auth/login`, {
-        email: email,
-        password: password,
-      });
+    const response = await axios.post(`${BASE_URL}/auth/login`, {
+      email: email,
+      password: password,
+    });
 
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+    if (response.data.statusCode === 200) {
+      console.log('Login Success');
+      console.log(response.data.data);
+      await AsyncStorage.setItem('token', response.data.data.token);
+      navigation.navigate('NewsList');
+    } else if (response.data.statusCode === 500) {
+      console.log('Login Failed');
+      console.log(response.data.message);
+    } else {
+      try {
+        throw new Error(
+          `Request failed with status code ${response.data.statusCode}`,
+        );
+      } catch (error) {
+        console.log('Error: ' + error);
+      }
     }
   };
 

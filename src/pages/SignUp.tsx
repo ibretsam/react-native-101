@@ -9,7 +9,6 @@ import {
   Image,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import AxiosIntance from '../utils/AxiosInstance';
 import {BASE_URL} from '../utils/Constants';
 
 const SignUp = (props: any) => {
