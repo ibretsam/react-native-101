@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {
   Text,
   View,
@@ -10,6 +10,7 @@ import {
   Image,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import {AppContext, AppContextType} from '../utils/AppContext';
 import {BASE_URL} from '../utils/Constants';
 
 const Login = (props: any) => {
@@ -17,6 +18,7 @@ const Login = (props: any) => {
   const googleLogo = require('../../assets/googleIcon.png');
 
   const {navigation} = props;
+  const {setIsLoggedIn} = useContext(AppContext) as AppContextType;
 
   const toSignUp = () => {
     navigation.navigate('SignUp');
@@ -34,6 +36,7 @@ const Login = (props: any) => {
     if (response.data.statusCode === 200) {
       console.log('Login Success');
       console.log(response.data.data);
+      setIsLoggedIn(true);
       await AsyncStorage.setItem('token', response.data.data.token);
       navigation.navigate('NewsList');
     } else if (response.data.statusCode === 500) {
