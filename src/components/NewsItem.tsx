@@ -1,28 +1,42 @@
-import {View, Text, Image, StyleSheet, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Dimensions,
+  Touchable,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
 import moment from 'moment';
 
 const NewsItem = (props: any) => {
+  const {navigation} = props;
   const data = props.data;
   const formattedTime = moment(data.createdAt).fromNow();
+  const handlePress = () => {
+    navigation.navigate('DetailedNews', {id: data._id});
+  };
   return (
-    <View style={styles.container}>
-      <Image style={styles.image} source={{uri: data.image}} />
-      <View style={styles.text}>
-        <Text style={styles.title}>
-          {data.title.slice(0, 60)}
-          {data.title.length > 60 ? '...' : ''}
-        </Text>
-        <Text style={styles.content}>{data.content.slice(0, 67)}...</Text>
-        <View style={styles.time}>
-          <Image
-            style={styles.clock}
-            source={require('../../assets/Time.png')}
-          />
-          <Text>{formattedTime}</Text>
+    <TouchableOpacity onPress={handlePress}>
+      <View style={styles.container}>
+        <Image style={styles.image} source={{uri: data.image}} />
+        <View style={styles.text}>
+          <Text style={styles.title}>
+            {data.title.slice(0, 60)}
+            {data.title.length > 60 ? '...' : ''}
+          </Text>
+          <Text style={styles.content}>{data.content.slice(0, 67)}...</Text>
+          <View style={styles.time}>
+            <Image
+              style={styles.clock}
+              source={require('../../assets/Time.png')}
+            />
+            <Text>{formattedTime}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

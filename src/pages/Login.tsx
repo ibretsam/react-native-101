@@ -8,6 +8,7 @@ import {
   TextInput,
   Pressable,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import {AppContext, AppContextType} from '../utils/AppContext';
@@ -26,18 +27,20 @@ const Login = (props: any) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isloading, SetIsLoading] = useState(false);
 
   const login = async () => {
     const response = await axios.post(`${BASE_URL}/auth/login`, {
       email: email,
       password: password,
     });
-
+    SetIsLoading(true);
     if (response.data.statusCode === 200) {
       console.log('Login Success');
       console.log(response.data.data);
       setIsLoggedIn(true);
       await AsyncStorage.setItem('token', response.data.data.token);
+      SetIsLoading(false);
       // navigation.navigate('NewsList');
     } else if (response.data.statusCode === 500) {
       console.log('Login Failed');
@@ -55,6 +58,7 @@ const Login = (props: any) => {
 
   return (
     <View style={styles.container}>
+      {isloading ? <ActivityIndicator /> : null}
       <View style={styles.heroContent}>
         <View>
           <Text style={[styles.blackText, styles.heroTitle]}>Hello</Text>

@@ -6,6 +6,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import NewsList from '../pages/NewsList';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {AppContext, AppContextType} from './AppContext';
+import DetailedNews from '../pages/DetailedNews';
 
 // Login, Register, manage by Stack
 const Stack = createNativeStackNavigator();
@@ -48,6 +49,11 @@ const Main = () => {
         name="NewsList"
         component={NewsList}
         options={{title: 'Home'}}
+      />
+      <Tab.Screen
+        name="DetailedNews"
+        component={DetailedNews}
+        options={{title: 'Detailed News'}}
       />
     </Tab.Navigator>
   );

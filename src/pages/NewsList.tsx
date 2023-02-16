@@ -54,7 +54,9 @@ const NewsList = (props: any) => {
           </View>
           <FlatList
             data={newsList}
-            renderItem={({item}) => <NewsItem data={item} reversed />}
+            renderItem={({item}) => (
+              <NewsItem data={item} navigation={props.navigation} />
+            )}
           />
         </View>
       )}
