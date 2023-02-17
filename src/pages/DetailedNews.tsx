@@ -5,6 +5,7 @@ import {
   Image,
   StyleSheet,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {BASE_URL} from '../utils/Constants';
@@ -12,6 +13,12 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import moment from 'moment';
+import {useRoute, useNavigation} from '@react-navigation/native';
+
+interface RouteParams {
+  id?: string;
+  // other properties, if any
+}
 
 const DetailedNews = (props: any) => {
   const [data, setData] = useState({
@@ -22,8 +29,21 @@ const DetailedNews = (props: any) => {
     createdAt: '',
     createdBy: '',
   });
-  const {id} = props.route.params;
+
+  const route = useRoute();
+  const navagation = useNavigation();
+  const {id} = route.params as RouteParams;
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleGoBack = () => {
+    navagation.goBack();
+  };
+
   useEffect(() => {
+    if (!id) {
+      return;
+    }
+    console.log('Props: ' + id);
     const getDetailedNews = async () => {
       console.log(id);
       const token = await AsyncStorage.getItem('token');
@@ -40,6 +60,7 @@ const DetailedNews = (props: any) => {
       );
       console.log(response.data.data[0]);
       setData(response.data.data[0]);
+      setIsLoading(false);
     };
 
     getDetailedNews();
@@ -47,35 +68,47 @@ const DetailedNews = (props: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.topBar}>
-        <Pressable>
-          <Image source={require('../../assets/BackArrow.png')} />
-        </Pressable>
-        <View style={styles.topBarRightItems}>
-          <Pressable>
-            <Image source={require('../../assets/Share.png')} />
-          </Pressable>
-          <Pressable>
-            <Image source={require('../../assets/MoreSetting.png')} />
-          </Pressable>
+      {isLoading ? (
+        <ActivityIndicator
+          style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+        />
+      ) : (
+        <View>
+          <View style={styles.topBar}>
+            <Pressable onPress={handleGoBack}>
+              <Image source={require('../../assets/BackArrow.png')} />
+            </Pressable>
+            <View style={styles.topBarRightItems}>
+              <Pressable>
+                <Image source={require('../../assets/Share.png')} />
+              </Pressable>
+              <Pressable>
+                <Image source={require('../../assets/MoreSetting.png')} />
+              </Pressable>
+            </View>
+          </View>
+          <View style={styles.imageContainer}>
+            {data.image && (
+              <Image style={styles.image} source={{uri: data.image}} />
+            )}
+          </View>
+          <View>
+            <Text style={styles.title}>{data.title}</Text>
+            {data.createdAt && (
+              <View style={styles.timeContainer}>
+                <Image
+                  style={styles.clock}
+                  source={require('../../assets/Time.png')}
+                />
+                <Text style={styles.time}>
+                  {moment(data.createdAt).fromNow()}
+                </Text>
+              </View>
+            )}
+            <Text style={styles.content}>{data.content}</Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.imageContainer}>
-        {data.image && (
-          <Image style={styles.image} source={{uri: data.image}} />
-        )}
-      </View>
-      <View>
-        <Text style={styles.title}>{data.title}</Text>
-        <View style={styles.timeContainer}>
-          <Image
-            style={styles.clock}
-            source={require('../../assets/Time.png')}
-          />
-          <Text style={styles.time}>{moment(data.createdAt).fromNow()}</Text>
-        </View>
-        <Text style={styles.content}>{data.content}</Text>
-      </View>
+      )}
     </SafeAreaView>
   );
 };
@@ -92,7 +125,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     marginHorizontal: 15,
-    marginVertical: 10,
   },
   topBar: {
     flexDirection: 'row',

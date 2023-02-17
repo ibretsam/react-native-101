@@ -15,6 +15,7 @@ const NewsItem = (props: any) => {
   const data = props.data;
   const formattedTime = moment(data.createdAt).fromNow();
   const handlePress = () => {
+    console.log(data._id);
     navigation.navigate('DetailedNews', {id: data._id});
   };
   return (

@@ -7,8 +7,8 @@ import NewsList from '../pages/NewsList';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {AppContext, AppContextType} from './AppContext';
 import DetailedNews from '../pages/DetailedNews';
+import Profile from '../pages/Profile';
 
-// Login, Register, manage by Stack
 const Stack = createNativeStackNavigator();
 const Auth = () => {
   return (
@@ -40,21 +40,27 @@ const Auth = () => {
   );
 };
 
-// List news, profile, news manage by Tab
+const News = () => {
+  return (
+    <Stack.Navigator initialRouteName="NewsList">
+      <Stack.Screen name="NewsList" options={{headerShown: false}}>
+        {props => <NewsList navigation={props.navigation} />}
+      </Stack.Screen>
+      <Stack.Screen
+        name="DetailedNews"
+        options={{headerShown: false}}
+        component={DetailedNews}
+      />
+    </Stack.Navigator>
+  );
+};
+
 const Tab = createBottomTabNavigator();
 const Main = () => {
   return (
     <Tab.Navigator screenOptions={{headerShown: false}}>
-      <Tab.Screen
-        name="NewsList"
-        component={NewsList}
-        options={{title: 'Home'}}
-      />
-      <Tab.Screen
-        name="DetailedNews"
-        component={DetailedNews}
-        options={{title: 'Detailed News'}}
-      />
+      <Tab.Screen name="News" component={News} options={{title: 'Home'}} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 };

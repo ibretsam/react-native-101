@@ -30,18 +30,17 @@ const Login = (props: any) => {
   const [isloading, SetIsLoading] = useState(false);
 
   const login = async () => {
+    SetIsLoading(true);
     const response = await axios.post(`${BASE_URL}/auth/login`, {
       email: email,
       password: password,
     });
-    SetIsLoading(true);
     if (response.data.statusCode === 200) {
       console.log('Login Success');
       console.log(response.data.data);
       setIsLoggedIn(true);
       await AsyncStorage.setItem('token', response.data.data.token);
       SetIsLoading(false);
-      // navigation.navigate('NewsList');
     } else if (response.data.statusCode === 500) {
       console.log('Login Failed');
       console.log(response.data.message);
@@ -58,7 +57,13 @@ const Login = (props: any) => {
 
   return (
     <View style={styles.container}>
-      {isloading ? <ActivityIndicator /> : null}
+      {isloading ? (
+        <ActivityIndicator
+          style={{justifyContent: 'center', alignItems: 'center'}}
+        />
+      ) : (
+        <View></View>
+      )}
       <View style={styles.heroContent}>
         <View>
           <Text style={[styles.blackText, styles.heroTitle]}>Hello</Text>
