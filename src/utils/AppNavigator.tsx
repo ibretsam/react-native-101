@@ -8,6 +8,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {AppContext, AppContextType} from './AppContext';
 import DetailedNews from '../pages/DetailedNews';
 import Profile from '../pages/Profile';
+import NewPost from '../pages/NewPost';
 
 const Stack = createNativeStackNavigator();
 const Auth = () => {
@@ -61,6 +62,7 @@ const Main = () => {
     <Tab.Navigator screenOptions={{headerShown: false}}>
       <Tab.Screen name="News" component={News} options={{title: 'Home'}} />
       <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="NewPost" component={NewPost} />
     </Tab.Navigator>
   );
 };
