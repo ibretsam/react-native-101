@@ -7,8 +7,10 @@ import NewsList from '../pages/NewsList';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {AppContext, AppContextType} from './AppContext';
 import DetailedNews from '../pages/DetailedNews';
-import Profile from '../pages/Profile';
 import NewPost from '../pages/NewPost';
+import Profile from '../pages/Profile';
+import UpdateProfile from '../pages/UpdateProfile';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Stack = createNativeStackNavigator();
 const Auth = () => {
@@ -43,7 +45,7 @@ const Auth = () => {
 
 const News = () => {
   return (
-    <Stack.Navigator initialRouteName="NewsList">
+    <Stack.Navigator>
       <Stack.Screen name="NewsList" options={{headerShown: false}}>
         {props => <NewsList navigation={props.navigation} />}
       </Stack.Screen>
@@ -52,24 +54,72 @@ const News = () => {
         options={{headerShown: false}}
         component={DetailedNews}
       />
+      <Stack.Screen
+        name="UpdateProfile"
+        options={{headerShown: false}}
+        component={UpdateProfile}
+      />
+      <Stack.Screen
+        name="NewPost"
+        options={{headerShown: false}}
+        component={NewPost}
+      />
     </Stack.Navigator>
   );
 };
 
 const Tab = createBottomTabNavigator();
+
+interface IconProps {
+  name: string;
+  size: number;
+  color: string;
+}
+
+const Icon = ({name, size, color}: IconProps) => {
+  return <Ionicons name={name} size={size} color={color} />;
+};
+
 const Main = () => {
   return (
-    <Tab.Navigator screenOptions={{headerShown: false}}>
-      <Tab.Screen name="News" component={News} options={{title: 'Home'}} />
-      <Tab.Screen name="Profile" component={Profile} />
-      <Tab.Screen name="NewPost" component={NewPost} />
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
+          if (route.name === 'News') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Profile') {
+            iconName = 'md-person-circle-sharp';
+          } else if (route.name === 'NewPost') {
+            iconName = 'ios-add-circle-sharp';
+          }
+          return iconName ? (
+            <Icon name={iconName} size={size} color={color} />
+          ) : null;
+        },
+      })}>
+      <Tab.Screen
+        name="News"
+        component={News}
+        options={{title: 'Home', headerShown: false}}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{title: 'Profile', headerShown: false}}
+      />
     </Tab.Navigator>
   );
 };
 
 const AppNavigator = () => {
   const {isLoggedIn} = useContext(AppContext) as AppContextType;
-  return <>{isLoggedIn ? <Main /> : <Auth />}</>;
+  const {user} = useContext(AppContext) as AppContextType;
+  return (
+    <>
+      {isLoggedIn ? user.name === '' ? <UpdateProfile /> : <Main /> : <Auth />}
+    </>
+  );
 };
 
 export default AppNavigator;
