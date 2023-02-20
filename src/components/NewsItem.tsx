@@ -24,10 +24,14 @@ const NewsItem = (props: any) => {
         <Image style={styles.image} source={{uri: data.image}} />
         <View style={styles.text}>
           <Text style={styles.title}>
-            {data.title.slice(0, 60)}
+            {data.title && data.title.slice(0, 60)}
             {data.title.length > 60 ? '...' : ''}
           </Text>
-          <Text style={styles.content}>{data.content.slice(0, 67)}...</Text>
+          <Text style={styles.content}>
+            {data.content.length > 66
+              ? data.content.slice(0, 67) + '...'
+              : data.content}
+          </Text>
           <View style={styles.time}>
             <Image
               style={styles.clock}
