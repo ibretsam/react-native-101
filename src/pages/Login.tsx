@@ -20,6 +20,7 @@ const Login = (props: any) => {
 
   const {navigation} = props;
   const {setIsLoggedIn} = useContext(AppContext) as AppContextType;
+  const {setUser, user} = useContext(AppContext) as AppContextType;
 
   const toSignUp = () => {
     navigation.navigate('SignUp');
@@ -41,6 +42,7 @@ const Login = (props: any) => {
       setIsLoggedIn(true);
       await AsyncStorage.setItem('token', response.data.data.token);
       SetIsLoading(false);
+      setUser(response.data.data.user);
     } else if (response.data.statusCode === 500) {
       console.log('Login Failed');
       console.log(response.data.message);
