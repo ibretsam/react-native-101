@@ -6,7 +6,7 @@ import TinhToan from './src/pages/TinhToan';
 import Flex from './src/pages/Flex';
 import Login from './src/pages/Login';
 import SignUp from './src/pages/SignUp';
-import Profile from './src/pages/Profile';
+import Profile from './src/pages/UpdateProfile';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';

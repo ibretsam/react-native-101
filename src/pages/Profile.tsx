@@ -1,51 +1,103 @@
-import React from 'react';
-import {View, Text, StyleSheet, Image, Pressable, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
+import React, {useContext, useEffect} from 'react';
+import {AppContext, AppContextType} from '../utils/AppContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {BASE_URL} from '../utils/Constants';
+import NewsItem from '../components/NewsItem';
+import {FloatingAction} from 'react-native-floating-action';
 
-const Profile = () => {
+const Profile = (props: any) => {
+  const {navigation} = props;
+  const {user} = useContext(AppContext) as AppContextType;
+  const defaultAvatarLink =
+    'https://t3.ftcdn.net/jpg/02/09/37/00/360_F_209370065_JLXhrc5inEmGl52SyvSPeVB23hB6IjrR.jpg';
+
+  const [myArticles, setMyArticles] = React.useState<any[]>([]);
+
+  const getUserArticles = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    };
+
+    const response = await axios.get(
+      `${BASE_URL}/articles/my-articles`,
+      config,
+    );
+    setMyArticles(response.data.data);
+  };
+
+  useEffect(() => {
+    getUserArticles();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.topItem}>
-        <Pressable>
-          <Image source={require('../../assets/BackArrow.png')} />
-        </Pressable>
-        <View style={styles.centerContainer}>
-            <Text>Fill your Profile</Text>
-        </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.topBar}>
+        <Text>Profile</Text>
+        <Image source={require('../../assets/Setting.png')} />
       </View>
-      <View style={styles.photoContainer}>
-        <View style={styles.centerContainer}>
-            <View style={styles.circle} />
-        </View>
-        <View style={styles.photoIcon}>
-            <Image source={require('../../assets/Photo.png')} />
-        </View>
-      </View>
-      
       <View>
-        <Text style={styles.inputLabel}>
-          Username
+        <View style={styles.avatarContainer}>
+          <Image
+            style={styles.avatar}
+            source={{
+              uri: user.avatar ? user.avatar : defaultAvatarLink,
+            }}
+          />
+        </View>
+        <Text
+          style={[
+            styles.textCenter,
+            {fontWeight: '700', margin: 7, fontSize: 17},
+          ]}>
+          {user.name}
         </Text>
-        <TextInput style={styles.input} />
-        <Text style={styles.inputLabel}>
-          Full Name
-        </Text>
-        <TextInput style={styles.input} />
-        <Text style={styles.inputLabel}>
-          Email<Text style={styles.redText}>*</Text>
-        </Text>
-        <TextInput style={styles.input} />
-        <Text style={styles.inputLabel}>
-          Phone Number<Text style={styles.redText}>*</Text>
-        </Text>
-        <TextInput style={styles.input} />
+        <Text style={styles.textCenter}>{user.email}</Text>
       </View>
-
-      <View style={styles.bottomBtn}>
-        <Pressable style={styles.heroBtn}>
-            <Text style={styles.heroBtnText}>Next</Text>
+      <View>
+        <Pressable
+          style={styles.updateButton}
+          onPress={() => navigation.navigate('UpdateProfile')}>
+          <Text style={styles.updateButtonText}>Update Profile</Text>
         </Pressable>
       </View>
-    </View>
+      <View>
+        <Text
+          style={[
+            styles.textCenter,
+            {fontWeight: '700', marginVertical: 10, color: '#1877F2'},
+          ]}>
+          My Articles
+        </Text>
+        <FlatList
+          style={styles.myArticles}
+          data={myArticles}
+          renderItem={({item}) => (
+            <NewsItem data={item} navigation={props.navigation} />
+          )}
+        />
+      </View>
+      <FloatingAction
+        onPressMain={() => {
+          props.navigation.navigate('NewPost');
+        }}
+        overlayColor="transparent"
+      />
+    </SafeAreaView>
   );
 };
 
@@ -55,94 +107,41 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    marginStart: 20,
-    marginEnd: 20
+    marginHorizontal: 15,
+    marginVertical: 10,
   },
-  topItem: {
-    display: 'flex',
+  topBar: {
     flexDirection: 'row',
-    padding: 10
-  },
-  centerContainer: {
-    flex: 1,
+    justifyContent: 'space-between',
+    marginHorizontal: 15,
+    marginVertical: 15,
     alignItems: 'center',
-    marginBottom: 20,
   },
-  topText: {
-    fontWeight: '600',
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center'
-  },
-  circle: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#EEF1F4',
-  },
-  photoIcon: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    left: '40%',
-    right: '20%',
-    top: '15%'
-  },
-  photoContainer: {
-    marginBottom: 120,
-  },
-
-  inputLabel: {
-    fontWeight: '400',
-    fontSize: 14,
-    lineHeight: 21,
-    color: '#4E4B66',
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  input: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    padding: 10,
-    backgroundColor: 'white',
-    borderColor: '#4E4B66',
-    borderStyle: 'solid',
-    borderWidth: 1,
-    borderRadius: 6,
-  },
-  bottomBtn: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
-    position: 'absolute',
-    bottom: 10,
-    left: 0,
-    right: 0,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    shadowOffset: { height: -2, width: 0 },
-    elevation: 4,
-  },
-  heroBtn: {
-    display: 'flex',
+  avatarContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 13,
+  },
+  avatar: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  textCenter: {
+    textAlign: 'center',
+  },
+  updateButton: {
     backgroundColor: '#1877F2',
-    borderRadius: 6,
+    borderRadius: 5,
+    padding: 10,
+    marginHorizontal: 15,
+    marginVertical: 10,
   },
-  heroBtnText: {
-    fontStyle: 'normal',
-    fontWeight: '600',
-    fontSize: 16,
-    lineHeight: 24,
+  updateButtonText: {
     color: 'white',
+    textAlign: 'center',
   },
-  redText: {
-    color: '#C30052',
+  myArticles: {
+    height: '100%',
   },
 });
