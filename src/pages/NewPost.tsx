@@ -12,12 +12,16 @@ import {
 } from 'react-native';
 import React from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {CameraOptions, launchCamera} from 'react-native-image-picker';
+import {
+  CameraOptions,
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker';
 import axios from 'axios';
 import {BASE_URL} from '../utils/Constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const NewPost = () => {
+const NewPost = (props: any) => {
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
   const [image, setImage] = React.useState('');
@@ -27,7 +31,7 @@ const NewPost = () => {
       mediaType: 'photo',
     };
 
-    const result = await launchCamera(options);
+    const result = await launchImageLibrary(options);
 
     const formdata = new FormData();
     if (result.assets && result.assets[0]) {
@@ -82,12 +86,18 @@ const NewPost = () => {
       setDescription('');
       setImage('');
       Alert.alert('Success', 'Article has been published');
+      props.navagation.navigate('NewsList');
+    } else {
+      Alert.alert('Error', 'Something went wrong');
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topBar}>
+        <Pressable onPress={() => props.navigation.goBack()}>
+          <Image source={require('../../assets/BackArrow.png')} />
+        </Pressable>
         <Text>New Post</Text>
         <Pressable>
           <Image source={require('../../assets/MoreSetting.png')} />
