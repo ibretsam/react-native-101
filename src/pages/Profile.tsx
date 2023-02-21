@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   StyleSheet,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useContext, useEffect} from 'react';
 import {AppContext, AppContextType} from '../utils/AppContext';
@@ -22,8 +23,10 @@ const Profile = (props: any) => {
     'https://t3.ftcdn.net/jpg/02/09/37/00/360_F_209370065_JLXhrc5inEmGl52SyvSPeVB23hB6IjrR.jpg';
 
   const [myArticles, setMyArticles] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(false);
 
   const getUserArticles = async () => {
+    setLoading(true);
     const token = await AsyncStorage.getItem('token');
     const config = {
       headers: {
@@ -37,7 +40,9 @@ const Profile = (props: any) => {
       `${BASE_URL}/articles/my-articles`,
       config,
     );
+
     setMyArticles(response.data.data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -46,51 +51,61 @@ const Profile = (props: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.topBar}>
-        <Text>Profile</Text>
-        <Image source={require('../../assets/Setting.png')} />
-      </View>
-      <View>
-        <View style={styles.avatarContainer}>
-          <Image
-            style={styles.avatar}
-            source={{
-              uri: user.avatar ? user.avatar : defaultAvatarLink,
-            }}
-          />
+      {loading ? (
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color="#1877F2" />
+          <Text>Loading</Text>
         </View>
-        <Text
-          style={[
-            styles.textCenter,
-            {fontWeight: '700', margin: 7, fontSize: 17},
-          ]}>
-          {user.name}
-        </Text>
-        <Text style={styles.textCenter}>{user.email}</Text>
-      </View>
-      <View>
-        <Pressable
-          style={styles.updateButton}
-          onPress={() => navigation.navigate('UpdateProfile')}>
-          <Text style={styles.updateButtonText}>Update Profile</Text>
-        </Pressable>
-      </View>
-      <View>
-        <Text
-          style={[
-            styles.textCenter,
-            {fontWeight: '700', marginVertical: 10, color: '#1877F2'},
-          ]}>
-          My Articles
-        </Text>
-        <FlatList
-          style={styles.myArticles}
-          data={myArticles}
-          renderItem={({item}) => (
-            <NewsItem data={item} navigation={props.navigation} />
-          )}
-        />
-      </View>
+      ) : (
+        <View>
+          <View style={styles.topBar}>
+            <Text>Profile</Text>
+            <Image source={require('../../assets/Setting.png')} />
+          </View>
+          <View>
+            <View style={styles.avatarContainer}>
+              <Image
+                style={styles.avatar}
+                source={{
+                  uri: user.avatar ? user.avatar : defaultAvatarLink,
+                }}
+              />
+            </View>
+            <Text
+              style={[
+                styles.textCenter,
+                {fontWeight: '700', margin: 7, fontSize: 17},
+              ]}>
+              {user.name}
+            </Text>
+            <Text style={styles.textCenter}>{user.email}</Text>
+          </View>
+          <View>
+            <Pressable
+              style={styles.updateButton}
+              onPress={() => navigation.navigate('UpdateProfile')}>
+              <Text style={styles.updateButtonText}>Update Profile</Text>
+            </Pressable>
+          </View>
+          <View>
+            <Text
+              style={[
+                styles.textCenter,
+                {fontWeight: '700', marginVertical: 10, color: '#1877F2'},
+              ]}>
+              My Articles
+            </Text>
+            <FlatList
+              style={styles.myArticles}
+              data={myArticles}
+              renderItem={({item}) => (
+                <NewsItem data={item} navigation={props.navigation} />
+              )}
+            />
+          </View>
+        </View>
+      )}
+
       <FloatingAction
         onPressMain={() => {
           props.navigation.navigate('NewPost');
@@ -109,6 +124,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     marginHorizontal: 15,
     marginVertical: 10,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   topBar: {
     flexDirection: 'row',
