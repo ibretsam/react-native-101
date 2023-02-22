@@ -7,17 +7,20 @@ import {
   Touchable,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useContext} from 'react';
 import moment from 'moment';
+import {AppContext, AppContextType} from '../utils/AppContext';
 
 const NewsItem = (props: any) => {
   const {navigation} = props;
   const data = props.data;
   const formattedTime = moment(data.createdAt).fromNow();
+
   const handlePress = () => {
     console.log(data._id);
     navigation.navigate('DetailedNews', {id: data._id});
   };
+
   return (
     <TouchableOpacity onPress={handlePress}>
       <View style={styles.container}>
@@ -25,10 +28,10 @@ const NewsItem = (props: any) => {
         <View style={styles.text}>
           <Text style={styles.title}>
             {data.title && data.title.slice(0, 60)}
-            {data.title.length > 60 ? '...' : ''}
+            {data.title && data.title.length > 60 ? '...' : ''}
           </Text>
           <Text style={styles.content}>
-            {data.content.length > 66
+            {data.title && data.content.length > 66
               ? data.content.slice(0, 67) + '...'
               : data.content}
           </Text>
