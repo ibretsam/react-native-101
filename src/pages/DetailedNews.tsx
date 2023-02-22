@@ -6,14 +6,16 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {BASE_URL} from '../utils/Constants';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import moment from 'moment';
 import {useRoute, useNavigation} from '@react-navigation/native';
+import {AppContext, AppContextType} from '../utils/AppContext';
 
 interface RouteParams {
   id?: string;
@@ -34,9 +36,52 @@ const DetailedNews = (props: any) => {
   const navagation = useNavigation();
   const {id} = route.params as RouteParams;
   const [isLoading, setIsLoading] = useState(true);
+  const {user} = useContext(AppContext) as AppContextType;
 
   const handleGoBack = () => {
     navagation.goBack();
+  };
+
+  const getDetailedNews = async () => {
+    console.log(id);
+    const token = await AsyncStorage.getItem('token');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await axios.get(
+      `${BASE_URL}/articles/${id}/detail`,
+      config,
+    );
+    console.log(response.data.data[0]);
+    setData(response.data.data[0]);
+    setIsLoading(false);
+  };
+
+  const deletePost = async () => {
+    console.log(data._id);
+    const token = await AsyncStorage.getItem('token');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    };
+    const response = await axios.delete(
+      `${BASE_URL}/articles/${data._id}/delete`,
+      config,
+    );
+
+    console.log(response.data);
+
+    if (response.data.error === false) {
+      Alert.alert('Delete Post', 'Post deleted successfully');
+      navagation.goBack();
+    }
   };
 
   useEffect(() => {
@@ -44,24 +89,6 @@ const DetailedNews = (props: any) => {
       return;
     }
     console.log('Props: ' + id);
-    const getDetailedNews = async () => {
-      console.log(id);
-      const token = await AsyncStorage.getItem('token');
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      };
-      const response = await axios.get(
-        `${BASE_URL}/articles/${id}/detail`,
-        config,
-      );
-      console.log(response.data.data[0]);
-      setData(response.data.data[0]);
-      setIsLoading(false);
-    };
 
     getDetailedNews();
   }, [id]);
@@ -107,6 +134,18 @@ const DetailedNews = (props: any) => {
             )}
             <Text style={styles.content}>{data.content}</Text>
           </View>
+          {user._id === data.createdBy && (
+            <View style={styles.buttonContainer}>
+              <Pressable
+                style={styles.editBtn}
+                onPress={() => props.navigation.navigate('NewPost', data)}>
+                <Text style={{color: 'white'}}>Edit</Text>
+              </Pressable>
+              <Pressable style={styles.delBtn} onPress={deletePost}>
+                <Text style={{color: 'white'}}>Delete</Text>
+              </Pressable>
+            </View>
+          )}
         </View>
       )}
     </SafeAreaView>
@@ -175,5 +214,24 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width - 16,
     fontSize: 14,
     fontWeight: '400',
+  },
+  buttonContainer: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  editBtn: {
+    backgroundColor: '#1877F2',
+    padding: 10,
+    borderRadius: 5,
+    width: Dimensions.get('window').width / 2 - 30,
+    alignItems: 'center',
+  },
+  delBtn: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    width: Dimensions.get('window').width / 2 - 30,
+    alignItems: 'center',
   },
 });
