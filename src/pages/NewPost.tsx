@@ -22,12 +22,20 @@ import {BASE_URL} from '../utils/Constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NewPost = (props: any) => {
-  const [title, setTitle] = React.useState(props.route.params.title ?? '');
+  const [title, setTitle] = React.useState(props.route.params?.title ?? '');
   const [description, setDescription] = React.useState(
-    props.route.params.content ?? '',
+    props.route.params?.content ?? '',
   );
-  const [image, setImage] = React.useState(props.route.params.image ?? '');
+  const [image, setImage] = React.useState(props.route.params?.image ?? '');
   const [mode, setMode] = React.useState('newPost');
+
+  useEffect(() => {
+    if (!props.route.params) {
+      setTitle('');
+      setDescription('');
+      setImage('');
+    }
+  }, [props.route.params]);
 
   const capture = async () => {
     const options: CameraOptions = {
@@ -81,22 +89,35 @@ const NewPost = (props: any) => {
       },
     };
 
-    const response = await axios.post(
-      `${BASE_URL}/articles`,
-      {
-        title: title,
-        content: description,
-        image: image,
-      },
-      config,
-    );
+    let response =
+      mode === 'editPost'
+        ? await axios.put(
+            `${BASE_URL}/articles/${props.route.params._id}/update`,
+            {
+              title: title,
+              content: description,
+              image: image,
+            },
+            config,
+          )
+        : await axios.post(
+            `${BASE_URL}/articles`,
+            {
+              title: title,
+              content: description,
+              image: image,
+            },
+            config,
+          );
 
-    console.log(response.data);
-    if (response.data.statusCode === 200) {
+    console.log(response?.data);
+    if (response?.data.error === false) {
       setTitle('');
       setDescription('');
       setImage('');
-      Alert.alert('Success', 'Article has been published');
+      mode === 'newPost'
+        ? Alert.alert('Success', 'Article has been published')
+        : Alert.alert('Success', 'Article has been updated');
       props.navigation.goBack();
     } else {
       Alert.alert('Error', 'Something went wrong');
