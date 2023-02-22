@@ -10,7 +10,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   CameraOptions,
@@ -22,9 +22,12 @@ import {BASE_URL} from '../utils/Constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const NewPost = (props: any) => {
-  const [title, setTitle] = React.useState('');
-  const [description, setDescription] = React.useState('');
-  const [image, setImage] = React.useState('');
+  const [title, setTitle] = React.useState(props.route.params.title ?? '');
+  const [description, setDescription] = React.useState(
+    props.route.params.content ?? '',
+  );
+  const [image, setImage] = React.useState(props.route.params.image ?? '');
+  const [mode, setMode] = React.useState('newPost');
 
   const capture = async () => {
     const options: CameraOptions = {
@@ -59,6 +62,14 @@ const NewPost = (props: any) => {
 
     setImage(response.data.data.path);
   };
+
+  useEffect(() => {
+    if (title === '' && description === '' && image === '') {
+      setMode('newPost');
+    } else {
+      setMode('editPost');
+    }
+  }, []);
 
   const publish = async () => {
     const token = await AsyncStorage.getItem('token');
@@ -114,7 +125,11 @@ const NewPost = (props: any) => {
         )}
       </Pressable>
       <View style={{padding: 20, flex: 1}}>
-        <TextInput placeholder="Add Title..." onChangeText={setTitle} />
+        <TextInput
+          placeholder="Add Title..."
+          onChangeText={setTitle}
+          value={title}
+        />
         <View
           style={{
             borderBottomColor: 'black',
@@ -126,23 +141,28 @@ const NewPost = (props: any) => {
           placeholder="Add Description..."
           multiline={true}
           onChangeText={setDescription}
+          value={description}
         />
       </View>
       <View style={styles.btnContainer}>
         <Pressable
           style={
-            title.length > 0 && description.length > 0
+            title ||
+            (title !== undefined && title.length > 0 && description.length > 0)
               ? styles.heroBtn
               : styles.heroBtnDisabled
           }
           onPress={publish}>
           <Text
             style={
-              title.length > 0 && description.length > 0
+              title ||
+              (title !== undefined &&
+                title.length > 0 &&
+                description.length > 0)
                 ? {color: 'white'}
                 : {color: '#667080'}
             }>
-            Publish
+            {mode === 'newPost' ? 'Publish' : 'Update'}
           </Text>
         </Pressable>
       </View>
