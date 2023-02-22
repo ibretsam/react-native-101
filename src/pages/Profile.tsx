@@ -16,17 +16,26 @@ import {BASE_URL} from '../utils/Constants';
 import NewsItem from '../components/NewsItem';
 import {FloatingAction} from 'react-native-floating-action';
 
+type ArticleType = {
+  _id: string;
+  title: string;
+  content: string;
+  image: string;
+  createdAt: string;
+  createdBy: string;
+};
+
 const Profile = (props: any) => {
   const {navigation} = props;
   const {user} = useContext(AppContext) as AppContextType;
   const defaultAvatarLink =
     'https://t3.ftcdn.net/jpg/02/09/37/00/360_F_209370065_JLXhrc5inEmGl52SyvSPeVB23hB6IjrR.jpg';
 
-  const [myArticles, setMyArticles] = useState([]);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const [myArticles, setMyArticles] = useState<ArticleType[]>([]);
+
+  const [loading, setLoading] = React.useState<boolean>(true);
 
   const getUserArticles = async () => {
-    setLoading(true);
     const token = await AsyncStorage.getItem('token');
     const config = {
       headers: {
@@ -47,7 +56,7 @@ const Profile = (props: any) => {
 
   useEffect(() => {
     getUserArticles();
-  }, []);
+  }, [myArticles]);
 
   return (
     <SafeAreaView style={styles.container}>
