@@ -8,7 +8,7 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {AppContext, AppContextType} from '../utils/AppContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -22,7 +22,7 @@ const Profile = (props: any) => {
   const defaultAvatarLink =
     'https://t3.ftcdn.net/jpg/02/09/37/00/360_F_209370065_JLXhrc5inEmGl52SyvSPeVB23hB6IjrR.jpg';
 
-  const [myArticles, setMyArticles] = React.useState<any[]>([]);
+  const [myArticles, setMyArticles] = useState([]);
   const [loading, setLoading] = React.useState<boolean>(false);
 
   const getUserArticles = async () => {
