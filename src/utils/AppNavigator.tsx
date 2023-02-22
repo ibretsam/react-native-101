@@ -50,6 +50,11 @@ const News = () => {
         {props => <NewsList navigation={props.navigation} />}
       </Stack.Screen>
       <Stack.Screen
+        name="Profile"
+        options={{headerShown: false}}
+        component={Profile}
+      />
+      <Stack.Screen
         name="DetailedNews"
         options={{headerShown: false}}
         component={DetailedNews}
