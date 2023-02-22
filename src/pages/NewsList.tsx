@@ -38,7 +38,7 @@ const NewsList = (props: any) => {
     };
 
     getNewsList();
-  }, []);
+  }, [newsList]);
 
   const handleSearchBlur = () => {
     setSearchMode(false);
