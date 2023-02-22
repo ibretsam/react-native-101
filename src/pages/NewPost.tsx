@@ -86,7 +86,7 @@ const NewPost = (props: any) => {
       setDescription('');
       setImage('');
       Alert.alert('Success', 'Article has been published');
-      props.navagation.navigate('NewsList');
+      props.navigation.goBack();
     } else {
       Alert.alert('Error', 'Something went wrong');
     }
