@@ -11,7 +11,11 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import {CameraOptions, launchCamera} from 'react-native-image-picker';
+import {
+  CameraOptions,
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker';
 import {AppContext, AppContextType} from '../utils/AppContext';
 import {BASE_URL} from '../utils/Constants';
 
@@ -27,7 +31,7 @@ function UpdateProfile(props: any) {
       mediaType: 'photo',
     };
 
-    const result = await launchCamera(options);
+    const result = await launchImageLibrary(options);
 
     const formdata = new FormData();
     if (result.assets && result.assets[0]) {
