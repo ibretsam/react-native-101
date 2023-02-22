@@ -97,6 +97,7 @@ const Main = () => {
             <Icon name={iconName} size={size} color={color} />
           ) : null;
         },
+        allowProps: true,
       })}>
       <Tab.Screen
         name="News"

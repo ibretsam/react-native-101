@@ -20,7 +20,7 @@ const Login = (props: any) => {
 
   const {navigation} = props;
   const {setIsLoggedIn} = useContext(AppContext) as AppContextType;
-  const {setUser, user} = useContext(AppContext) as AppContextType;
+  const {setUser} = useContext(AppContext) as AppContextType;
 
   const toSignUp = () => {
     navigation.navigate('SignUp');
