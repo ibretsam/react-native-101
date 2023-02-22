@@ -7,6 +7,7 @@ import {
   Dimensions,
   ActivityIndicator,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {BASE_URL} from '../utils/Constants';
@@ -43,7 +44,6 @@ const DetailedNews = (props: any) => {
   };
 
   const getDetailedNews = async () => {
-    console.log(id);
     const token = await AsyncStorage.getItem('token');
     const config = {
       headers: {
@@ -56,7 +56,6 @@ const DetailedNews = (props: any) => {
       `${BASE_URL}/articles/${id}/detail`,
       config,
     );
-    console.log(response.data.data[0]);
     setData(response.data.data[0]);
     setIsLoading(false);
   };
@@ -88,10 +87,9 @@ const DetailedNews = (props: any) => {
     if (!id) {
       return;
     }
-    console.log('Props: ' + id);
 
     getDetailedNews();
-  }, [id]);
+  }, [data]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -100,7 +98,7 @@ const DetailedNews = (props: any) => {
           style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
         />
       ) : (
-        <View>
+        <ScrollView>
           <View style={styles.topBar}>
             <Pressable onPress={handleGoBack}>
               <Image source={require('../../assets/BackArrow.png')} />
@@ -146,7 +144,7 @@ const DetailedNews = (props: any) => {
               </Pressable>
             </View>
           )}
-        </View>
+        </ScrollView>
       )}
     </SafeAreaView>
   );
