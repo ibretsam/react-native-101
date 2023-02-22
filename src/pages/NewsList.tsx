@@ -22,21 +22,21 @@ const NewsList = (props: any) => {
   const [searchMode, setSearchMode] = useState(false);
   const [searchData, setSearchData] = useState([]);
 
-  useEffect(() => {
-    const getNewsList = async () => {
-      const token = await AsyncStorage.getItem('token');
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      };
-      const response = await axios.get(`${BASE_URL}/articles`, config);
-      setNewsList(response.data.data);
-      setIsLoading(false);
+  const getNewsList = async () => {
+    const token = await AsyncStorage.getItem('token');
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     };
+    const response = await axios.get(`${BASE_URL}/articles`, config);
+    setNewsList(response.data.data);
+    setIsLoading(false);
+  };
 
+  useEffect(() => {
     getNewsList();
   }, [newsList]);
 
