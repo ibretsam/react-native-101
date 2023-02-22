@@ -31,6 +31,7 @@
     "react-native-svg": "^13.8.0",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-vector-icons": "^9.2.0",
+    "socket.io-client": "^4.6.1",
     "yarn": "^1.22.19"
   },
   "devDependencies": {
